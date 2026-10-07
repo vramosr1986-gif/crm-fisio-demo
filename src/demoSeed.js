@@ -25,8 +25,8 @@ const DEMO_HEADERS_DOMICILIACIONES = [
 function crearDatosDemo() {
   const azar = generadorDemo(20240901);
   const ids = {
-    clinica: crearHojaDemo('CRM Demo - Clinica', DEMO_HEADERS_REGISTROS, filasRegistrosDemo(azar, 60, DEMO_SERVICIOS.slice(0, 2))),
-    estudio: crearHojaDemo('CRM Demo - Estudio', DEMO_HEADERS_REGISTROS, filasRegistrosDemo(azar, 40, DEMO_SERVICIOS.slice(2))),
+    clinica: crearHojaDemo('CRM Demo - Clinica', DEMO_HEADERS_REGISTROS, filasRegistrosDemo(azar, 260, DEMO_SERVICIOS.slice(0, 2))),
+    estudio: crearHojaDemo('CRM Demo - Estudio', DEMO_HEADERS_REGISTROS, filasRegistrosDemo(azar, 180, DEMO_SERVICIOS.slice(2))),
     domiciliaciones: crearHojaDemo('CRM Demo - Domiciliaciones', DEMO_HEADERS_DOMICILIACIONES, filasDomiciliacionesDemo(azar, 12))
   };
   Logger.log('Pega estos IDs en SHEETS (src/Config.js):\n' + JSON.stringify(ids, null, 2));
@@ -49,7 +49,7 @@ function filasRegistrosDemo(azar, total, servicios) {
   const filas = [];
   const hoy = new Date();
   for (let i = 0; i < total; i++) {
-    const fecha = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate() - Math.floor(azar() * 45));
+    const fecha = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate() - Math.floor(azar() * 180));
     const hora = pad2Num(9 + Math.floor(azar() * 11)) + ':' + (azar() < 0.5 ? '00' : '30');
     const servicio = elegirDemo(azar, servicios);
     const fisio = elegirDemo(azar, DEMO_FISIOS);

@@ -46,6 +46,7 @@ web encima de esas hojas que valida, controla accesos y deja rastro de cada camb
 - **Detección de duplicados** al guardar y limpieza en bloque.
 - **Plantillas rápidas** (fisio, pilates, bonos) que rellenan el formulario en un clic.
 - **Calendario de sesiones** en el panel lateral: cada día muestra cuántas sesiones hay y, al pulsarlo, el detalle con hora, cliente, centro y profesional. Se puede filtrar por centro.
+- **Estadísticas** del módulo: ingresos, registros y ticket medio; ingresos por mes; sesiones por profesional; ingresos por servicio y reparto por forma de pago. Se calculan sobre los registros filtrados y se dibujan en SVG, sin librerías externas.
 - **Facturas en PDF** generadas desde un registro, con IVA e IRPF.
 - **Exportación a Excel** de la vista filtrada, con totales.
 - **Auditoría:** cada alta, edición o borrado queda en una hoja `Auditoria` con los datos antes y después.
@@ -63,6 +64,10 @@ Interfaz de la aplicación con los datos ficticios de la demo.
 **Alta de registro con plantillas rápidas y validaciones**
 
 ![Nuevo registro](docs/screenshots/nuevo-registro.jpg)
+
+**Estadísticas: ingresos por mes, sesiones por profesional, ingresos por servicio y forma de pago**
+
+![Estadísticas](docs/screenshots/estadisticas.jpg)
 
 **Calendario de sesiones: cada día muestra cuántas hay y, al pulsarlo, el detalle por profesional**
 

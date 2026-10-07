@@ -5,6 +5,7 @@
   const refreshBtn = document.getElementById('btn-refresh');
   const newRowBtn = document.getElementById('btn-new-row');
   const exportExcelBtn = document.getElementById('btn-export-excel');
+  const statsBtn = document.getElementById('btn-stats');
   const tableEl = document.getElementById('tabla-modulo');
   const errorBoxEl = document.getElementById('error-box');
   const duplicatesBoxEl = document.getElementById('duplicates-box');
@@ -137,6 +138,7 @@
     modalOverlayEl.hidden = true;
     modalMode = null;
     modalCardEl.classList.remove('cal-modal');
+    modalCardEl.classList.remove('stats-modal');
     editingRowIndex = -1;
     currentMergeFiles = [];
     currentConvertImages = [];
@@ -2821,6 +2823,159 @@ var COMBO_PRESETS = [
     }
     openCreateModal();
   });
+
+  var STATS_MESES = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+  var STATS_PAGO_COLORES = { 'Tarjeta': '#2f6fbf', 'Efectivo': '#2e9a68', 'Bono': '#8857c4' };
+
+  function statsFormatoEuros(n) {
+    return n.toLocaleString('es-ES', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) + ' €';
+  }
+
+  function statsCalcular() {
+    var idxFecha = getHeaderIndexByPattern(/^fecha_de_la_sesion$|^fecha_sesion$|^fecha$/);
+    var idxImporte = getHeaderIndexByPattern(/^cantidad\*?$|^importe_mensual$/);
+    var idxFisio = getHeaderIndexByPattern(/^fisio_de_sesion\*?$/);
+    var idxServicio = getHeaderIndexByPattern(/^que_paga\*?$|^servicio$/);
+    var idxPago = getHeaderIndexByPattern(/^como_paga\*?$/);
+    var porMes = {}, porFisio = {}, porServicio = {}, porPago = {};
+    var total = 0, sesiones = 0;
+
+    filteredRows.forEach(function(wrapper) {
+      var row = wrapper.data;
+      var importe = idxImporte >= 0 ? (parseNumber(row[idxImporte]) || 0) : 0;
+      total += importe;
+      sesiones += 1;
+      if (idxFecha >= 0) {
+        var partes = String(row[idxFecha] || '').split(/[\/\s]/);
+        if (partes.length >= 3) {
+          var clave = partes[2] + '-' + partes[1];
+          porMes[clave] = (porMes[clave] || 0) + importe;
+        }
+      }
+      if (idxFisio >= 0 && row[idxFisio]) {
+        porFisio[row[idxFisio]] = (porFisio[row[idxFisio]] || 0) + 1;
+      }
+      if (idxServicio >= 0 && row[idxServicio]) {
+        porServicio[row[idxServicio]] = (porServicio[row[idxServicio]] || 0) + importe;
+      }
+      if (idxPago >= 0 && row[idxPago]) {
+        porPago[row[idxPago]] = (porPago[row[idxPago]] || 0) + 1;
+      }
+    });
+
+    var meses = Object.keys(porMes).sort().slice(-6).map(function(k) {
+      var p = k.split('-');
+      return { etiqueta: STATS_MESES[Number(p[1]) - 1] + ' ' + p[0].slice(2), valor: porMes[k] };
+    });
+    function ordenar(obj) {
+      return Object.keys(obj).map(function(k) { return { etiqueta: k, valor: obj[k] }; })
+        .sort(function(a, b) { return b.valor - a.valor; });
+    }
+    return {
+      total: total,
+      sesiones: sesiones,
+      ticket: sesiones ? total / sesiones : 0,
+      meses: meses,
+      fisios: ordenar(porFisio),
+      servicios: ordenar(porServicio),
+      pagos: ordenar(porPago)
+    };
+  }
+
+  function statsBarrasVerticales(datos, formato) {
+    if (!datos.length) {
+      return '<p class="stats-vacio">Sin fechas en los registros filtrados.</p>';
+    }
+    var w = 900, h = 230, mIzq = 8, mAbajo = 26, mArriba = 22;
+    var max = Math.max.apply(null, datos.map(function(d) { return d.valor; })) || 1;
+    var paso = (w - mIzq * 2) / datos.length;
+    var ancho = Math.min(72, paso * 0.5);
+    var svg = '<svg class="stats-svg" viewBox="0 0 ' + w + ' ' + h + '" role="img" aria-label="Ingresos por mes">';
+    [0.5, 1].forEach(function(f) {
+      var y = mArriba + (h - mArriba - mAbajo) * (1 - f);
+      svg += '<line x1="0" x2="' + w + '" y1="' + y + '" y2="' + y + '" class="stats-grid"/>';
+    });
+    datos.forEach(function(d, i) {
+      var alto = Math.max(2, (h - mArriba - mAbajo) * d.valor / max);
+      var x = mIzq + paso * i + (paso - ancho) / 2;
+      var y = h - mAbajo - alto;
+      var ultimo = i === datos.length - 1;
+      svg += '<g class="stats-mark"><title>' + escapeHtml(d.etiqueta + ': ' + formato(d.valor)) + '</title>';
+      svg += '<rect x="' + (x - 6) + '" y="' + mArriba + '" width="' + (ancho + 12) + '" height="' + (h - mArriba - mAbajo) + '" fill="transparent"/>';
+      svg += '<path class="stats-bar' + (ultimo ? ' is-actual' : '') + '" d="M' + x + ',' + (y + alto) + 'V' + (y + 4) + 'Q' + x + ',' + y + ' ' + (x + 4) + ',' + y + 'H' + (x + ancho - 4) + 'Q' + (x + ancho) + ',' + y + ' ' + (x + ancho) + ',' + (y + 4) + 'V' + (y + alto) + 'Z"/>';
+      svg += '<text x="' + (x + ancho / 2) + '" y="' + (y - 6) + '" class="stats-valor" text-anchor="middle">' + escapeHtml(formato(d.valor)) + '</text>';
+      svg += '<text x="' + (x + ancho / 2) + '" y="' + (h - 8) + '" class="stats-eje" text-anchor="middle">' + escapeHtml(d.etiqueta) + '</text></g>';
+    });
+    svg += '<line x1="0" x2="' + w + '" y1="' + (h - mAbajo) + '" y2="' + (h - mAbajo) + '" class="stats-base"/></svg>';
+    return svg;
+  }
+
+  function statsBarrasHorizontales(datos, formato) {
+    if (!datos.length) {
+      return '<p class="stats-vacio">Sin datos.</p>';
+    }
+    var max = Math.max.apply(null, datos.map(function(d) { return d.valor; })) || 1;
+    return '<div class="stats-hbars">' + datos.map(function(d) {
+      var pct = Math.max(2, 100 * d.valor / max);
+      return '<div class="stats-hrow" title="' + escapeHtml(d.etiqueta + ': ' + formato(d.valor)) + '">' +
+        '<span class="stats-hlabel">' + escapeHtml(d.etiqueta) + '</span>' +
+        '<span class="stats-htrack"><span class="stats-hbar" style="width:' + pct.toFixed(1) + '%"></span></span>' +
+        '<span class="stats-hvalor">' + escapeHtml(formato(d.valor)) + '</span></div>';
+    }).join('') + '</div>';
+  }
+
+  function statsReparto(datos) {
+    var total = datos.reduce(function(a, d) { return a + d.valor; }, 0);
+    if (!total) {
+      return '<p class="stats-vacio">Sin datos.</p>';
+    }
+    var orden = ['Tarjeta', 'Efectivo', 'Bono'];
+    var lista = datos.slice().sort(function(a, b) {
+      var ia = orden.indexOf(a.etiqueta), ib = orden.indexOf(b.etiqueta);
+      return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib);
+    });
+    var barra = '<div class="stats-stack" role="img" aria-label="Reparto por forma de pago">';
+    var leyenda = '<div class="stats-leyenda">';
+    lista.forEach(function(d) {
+      var pct = 100 * d.valor / total;
+      var color = STATS_PAGO_COLORES[d.etiqueta] || '#7b8794';
+      barra += '<span class="stats-seg" style="width:' + pct.toFixed(2) + '%;background:' + color + '" title="' + escapeHtml(d.etiqueta + ': ' + d.valor + ' (' + Math.round(pct) + '%)') + '"></span>';
+      leyenda += '<span class="stats-key"><i style="background:' + color + '"></i>' + escapeHtml(d.etiqueta) + ' <b>' + Math.round(pct) + '%</b> <small>' + d.valor + '</small></span>';
+    });
+    return barra + '</div>' + leyenda + '</div>';
+  }
+
+  function abrirEstadisticas() {
+    var st = statsCalcular();
+    var esDomi = currentModuleId === 'domiciliaciones';
+    var html = '<p class="stats-nota">Calculado sobre los ' + st.sesiones + ' registros visibles. Si cambias los filtros, las estadísticas cambian con ellos.</p>';
+    html += '<div class="stats-kpis">';
+    html += '<div class="stats-kpi"><span>' + (esDomi ? 'Total mensual' : 'Ingresos') + '</span><b>' + statsFormatoEuros(st.total) + '</b></div>';
+    html += '<div class="stats-kpi"><span>' + (esDomi ? 'Domiciliaciones' : 'Registros') + '</span><b>' + st.sesiones + '</b></div>';
+    html += '<div class="stats-kpi"><span>' + (esDomi ? 'Cuota media' : 'Ticket medio') + '</span><b>' + statsFormatoEuros(st.ticket) + '</b></div>';
+    html += '</div>';
+    if (!esDomi) {
+      html += '<section class="stats-card stats-wide"><h4>Ingresos por mes <small class="stats-sub">· el último es el mes en curso</small></h4>' + statsBarrasVerticales(st.meses, statsFormatoEuros) + '</section>';
+    }
+    html += '<div class="stats-grid2">';
+    if (st.fisios.length) {
+      html += '<section class="stats-card"><h4>Sesiones por profesional</h4>' + statsBarrasHorizontales(st.fisios, function(v) { return String(v); }) + '</section>';
+    }
+    html += '<section class="stats-card"><h4>Ingresos por servicio</h4>' + statsBarrasHorizontales(st.servicios, statsFormatoEuros) + '</section>';
+    if (st.pagos.length) {
+      html += '<section class="stats-card"><h4>Forma de pago</h4>' + statsReparto(st.pagos) + '</section>';
+    }
+    html += '</div>';
+
+    openModal('Estadísticas · ' + (moduleTitleEl.textContent || ''));
+    modalCardEl.classList.add('stats-modal');
+    modalSaveEl.hidden = true;
+    modalBodyEl.innerHTML = html;
+  }
+
+  if (statsBtn) {
+    statsBtn.addEventListener('click', abrirEstadisticas);
+  }
 
   exportExcelBtn.addEventListener('click', function() {
     openExportColumnsModal();
