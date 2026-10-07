@@ -4,13 +4,14 @@
 ![clasp](https://img.shields.io/badge/CLI-clasp-34A853)
 ![Lint](https://img.shields.io/badge/CI-GitHub_Actions-2088FF?logo=githubactions)
 
-Versión de demostración de un CRM interno que desarrollé como proyecto freelance para un
-centro de fisioterapia y pilates. Sustituye el registro manual de sesiones y cobros en hojas
-de cálculo por una aplicación web con usuarios, roles y auditoría.
+Versión de demostración de un CRM que desarrollé como proyecto personal, para aprender,
+para un pequeño negocio familiar de fisioterapia y pilates que lo usa a diario. Sustituye el
+registro manual de sesiones y cobros en hojas de cálculo por una aplicación web con usuarios,
+roles y auditoría.
 
-> **Todos los datos de este repositorio son ficticios.** Nombres de centro, profesionales,
+> **Todos los datos de este repositorio son ficticios.** Nombres del centro, profesionales,
 > clientes, precios e identificadores se han sustituido por valores inventados. Es una copia
-> de demostración independiente del sistema en producción.
+> de demostración independiente de la aplicación en uso.
 
 ---
 
@@ -83,6 +84,6 @@ clasp push
 
 Google Apps Script (V8) · Google Sheets · HTML/CSS/JavaScript · clasp · ESLint · GitHub Actions
 
-En la versión real, el despliegue a producción y a un entorno de desarrollo se hace con
+En la versión en uso, el despliegue a producción y a un entorno de desarrollo se hace con
 GitHub Actions y `clasp`, con las credenciales guardadas como secretos del repositorio.
 En esta demo el workflow solo ejecuta el lint.
