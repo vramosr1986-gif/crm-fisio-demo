@@ -1,0 +1,18 @@
+{
+  "name": "crm-fisio-demo",
+  "version": "1.0.0",
+  "description": "CRM de demostracion para un centro de fisioterapia (Google Apps Script + clasp). Datos ficticios.",
+  "main": "src/app.js",
+  "scripts": {
+    "lint": "eslint src/**/*.js",
+    "lint:fix": "eslint src/**/*.js --fix"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@eslint/js": "8.57.1",
+    "eslint": "8.57.1",
+    "globals": "16.4.0"
+  }
+}

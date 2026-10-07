@@ -1,0 +1,7 @@
+{
+  "scriptId": "TU_SCRIPT_ID",
+  "rootDir": "src",
+  "scriptExtensions": [".js", ".gs"],
+  "htmlExtensions": [".html"],
+  "jsonExtensions": [".json"]
+}
