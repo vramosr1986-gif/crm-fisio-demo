@@ -15,6 +15,21 @@ roles y auditoría.
 
 ---
 
+## Por qué Apps Script
+
+Toda la aplicación está hecha solo con Google: **Apps Script** como backend y **Google Sheets**
+como base de datos, sin servidores ni coste de hosting. Es un ejemplo de que con Apps Script se
+puede construir algo muy funcional, no solo macros:
+
+- `HtmlService` sirve la interfaz web.
+- `SpreadsheetApp` lee y escribe los datos.
+- `CacheService` guarda las sesiones con caducidad.
+- `PropertiesService` almacena los usuarios.
+- `LockService` evita que dos personas escriban a la vez.
+
+Además, un script complementario (en un proyecto aparte, no incluido aquí) se ejecuta con un
+activador temporal a final de mes y envía por correo la contabilidad mensual.
+
 ## Qué resuelve
 
 Antes, cada profesional apuntaba sesiones y cobros directamente en una hoja de Google: datos
