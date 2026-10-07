@@ -37,6 +37,24 @@ web encima de esas hojas que valida, controla accesos y deja rastro de cada camb
 - **Registro de accesos** (`Log_Sesiones`) con resultado de cada intento de login.
 - **Escrituras con bloqueo** (`LockService`) para evitar conflictos entre usuarios simultáneos.
 
+## Capturas
+
+Interfaz de la aplicación con los datos ficticios de la demo.
+
+**Registros con filtros, totales y calendario de sesiones**
+
+![Tabla de registros](docs/screenshots/registros.jpg)
+
+**Alta de registro con plantillas rápidas y validaciones**
+
+![Nuevo registro](docs/screenshots/nuevo-registro.jpg)
+
+**Inicio de sesión con usuario propio**
+
+![Login](docs/screenshots/login.jpg)
+
+---
+
 ## Arquitectura
 
 ```text
