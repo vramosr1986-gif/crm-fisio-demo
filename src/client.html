@@ -215,6 +215,57 @@
     return normalize(header).replace(/\s+/g, '_');
   }
 
+  var HEADER_LABELS = {
+    marca_temporal: 'Registrado',
+    fecha_de_la_sesion: 'Fecha',
+    fecha_sesion: 'Fecha',
+    hora_de_la_sesion: 'Hora',
+    hora_sesion: 'Hora',
+    nombre_del_cliente: 'Cliente',
+    cliente: 'Cliente',
+    fisio_de_sesion: 'Profesional',
+    sesion_o_solopago: 'Tipo',
+    que_paga: 'Servicio',
+    como_paga: 'Forma de pago',
+    cantidad: 'Importe (€)',
+    quien_cobra: 'Cobra',
+    numero_operacion: 'Nº operación',
+    servicio: 'Servicio',
+    importe_mensual: 'Importe mensual (€)',
+    dia_de_cobro: 'Día de cobro',
+    estado: 'Estado'
+  };
+
+  function headerLabel(header) {
+    var key = getHeaderKey(header).replace(/\*$/, '');
+    if (HEADER_LABELS[key]) {
+      return HEADER_LABELS[key];
+    }
+    var txt = String(header || '').replace(/_/g, ' ').trim();
+    return txt.charAt(0).toUpperCase() + txt.slice(1);
+  }
+
+  function cellClassFor(header) {
+    var key = getHeaderKey(header).replace(/\*$/, '');
+    if (/^(cantidad|importe_mensual|dia_de_cobro|numero_operacion)$/.test(key)) {
+      return ' num';
+    }
+    if (/^(fecha_de_la_sesion|hora_de_la_sesion|marca_temporal|nombre_del_cliente|cliente|fisio_de_sesion|quien_cobra)$/.test(key)) {
+      return ' nowrap';
+    }
+    return '';
+  }
+
+  function cellContentFor(header, value) {
+    var key = getHeaderKey(header).replace(/\*$/, '');
+    var txt = String(value == null ? '' : value);
+    if (txt && /^(como_paga|que_paga|estado|sesion_o_solopago)$/.test(key)) {
+      var slug = normalize(txt).replace(/[^a-z0-9]+/g, '-');
+      return '<span class="pill pill-' + escapeHtml(key) + ' pill-' + escapeHtml(slug) + '">' + escapeHtml(txt) + '</span>';
+    }
+    return escapeHtml(txt);
+  }
+
   function getHeaderIndexByPattern(pattern) {
     for (var i = 0; i < currentHeaders.length; i++) {
       if (pattern.test(getHeaderKey(currentHeaders[i]))) {
@@ -477,7 +528,7 @@ var COMBO_PRESETS = [
         html += '<input type="hidden" data-edit-col="' + i + '" value="' + escapeHtml(safeValueOf(currentValue)) + '">';
         return;
       }
-      html += '<label>' + escapeHtml(header) + '</label>';
+      html += '<label>' + escapeHtml(headerLabel(header)) + '</label>';
       html += renderFieldControl(header, i, currentValue, values || []);
     });
     html += '</div>';
@@ -1178,7 +1229,7 @@ var COMBO_PRESETS = [
     filteredTotalAmount = getFilteredAmountTotal();
     var text = 'Registros filtrados: ' + filteredRows.length;
     if (filteredTotalAmount != null) {
-      text += ' · Total cantidad: ' + filteredTotalAmount.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      text += ' · Total: ' + filteredTotalAmount.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
     }
     summaryBoxEl.textContent = text;
     summaryBoxEl.hidden = false;
@@ -1209,7 +1260,7 @@ var COMBO_PRESETS = [
         cls += ' sorted-' + sortDirection;
         indicator = sortDirection === 'asc' ? ' ▲' : ' ▼';
       }
-      html += '<th class="' + cls + '" data-sort-col="' + i + '">' + escapeHtml(h) + indicator + '</th>';
+      html += '<th class="' + cls + '" data-sort-col="' + i + '">' + escapeHtml(headerLabel(h)) + indicator + '</th>';
     });
     html += '<th>Acciones</th></tr></thead><tbody>';
 
@@ -1224,7 +1275,7 @@ var COMBO_PRESETS = [
         if (isHiddenFormField(h)) {
           return;
         }
-        html += '<td class="editable-cell" data-edit-row="' + idx + '" data-edit-col="' + i + '" data-label="' + escapeHtml(h) + '">' + escapeHtml(row[i] || '') + '</td>';
+        html += '<td class="editable-cell' + cellClassFor(h) + '" data-edit-row="' + idx + '" data-edit-col="' + i + '" data-label="' + escapeHtml(headerLabel(h)) + '">' + cellContentFor(h, row[i]) + '</td>';
       });
       html += '<td class="actions" data-label="Acciones">';
       html += '<button type="button" class="btn tiny" data-action="edit" data-row="' + idx + '">Editar</button>';
@@ -1248,7 +1299,7 @@ var COMBO_PRESETS = [
           html += '<td><strong>Total filtrado</strong></td>';
         } else if (i === amountColIdx) {
           var totalTxt = filteredTotalAmount == null ? '-' : filteredTotalAmount.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-          html += '<td><strong>' + escapeHtml(totalTxt) + '</strong></td>';
+          html += '<td class="num"><strong>' + escapeHtml(totalTxt) + '</strong></td>';
         } else {
           html += '<td></td>';
         }
@@ -1841,7 +1892,7 @@ var COMBO_PRESETS = [
     currentHeaders.forEach(function(header, idx) {
       html += '<label class="export-col-item">';
       html += '<input type="checkbox" data-export-col="' + idx + '" checked> ';
-      html += '<span>' + escapeHtml(header) + '</span>';
+      html += '<span>' + escapeHtml(headerLabel(header)) + '</span>';
       html += '</label>';
     });
     html += '</div>';
@@ -1924,7 +1975,7 @@ var COMBO_PRESETS = [
       html += '<label class="checkbox-item"><input type="checkbox" class="new-user-module" value="' + escapeHtml(btn.getAttribute('data-app-id')) + '"> ' + escapeHtml(btn.getAttribute('data-app-name')) + '</label>';
     });
     html += '</div>';
-    html += '<label>Filtrar filas por Fisio_de_sesion (opcional)</label><input id="new-user-fisio" type="text" placeholder="Ej: Marta (vacio = ve todas las filas)">';
+    html += '<label>Filtrar filas por profesional (opcional)</label><input id="new-user-fisio" type="text" placeholder="Ej: Marta (vacio = ve todas las filas)">';
     html += '</div>';
     return html;
   }
@@ -2541,7 +2592,7 @@ var COMBO_PRESETS = [
   }
 
   function pintarCalendario() {
-    const nombres = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+    const nombres = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
     calTitleEl.textContent = nombres[calMonth] + ' ' + calYear;
 
     const contador = {};
@@ -2583,7 +2634,7 @@ var COMBO_PRESETS = [
     calDiaAbierto = fechaKey;
     modalMode = 'calendar-day';
     modalCardEl.classList.add('cal-modal');
-    openModal('Sesiones ' + fechaKey);
+    openModal('Sesiones del ' + fechaKey.split('-').reverse().join('/'));
     modalSaveEl.hidden = true;
 
     let html = '<table class="cal-sesion-table"><tbody>';

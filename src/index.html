@@ -11,14 +11,14 @@
     <div id="login-overlay" class="modal-overlay">
       <div class="modal-card login-card" role="dialog" aria-modal="true" aria-labelledby="login-title">
         <div class="modal-header">
-          <h3 id="login-title">Iniciar sesion</h3>
+          <h3 id="login-title">Iniciar sesión</h3>
         </div>
         <form id="login-form" onsubmit="return false">
           <div id="login-error" class="error-box" hidden></div>
           <div class="form-grid">
             <label for="login-username">Usuario</label>
             <input id="login-username" type="text" autocomplete="username">
-            <label for="login-password">Contrasena</label>
+            <label for="login-password">Contraseña</label>
             <input id="login-password" type="password" autocomplete="current-password">
           </div>
           <div class="modal-actions">
@@ -37,7 +37,7 @@
         <div class="hero-actions">
           <button id="btn-manage-users" class="btn secondary" type="button" hidden>Usuarios</button>
           <button id="btn-merge-pdfs" class="btn secondary" type="button" hidden>PDFs</button>
-          <button id="btn-logout" class="btn secondary" type="button">Cerrar sesion</button>
+          <button id="btn-logout" class="btn secondary" type="button">Cerrar sesión</button>
         </div>
       </header>
 
@@ -84,15 +84,15 @@
               <input id="filter-month-to" type="date">
             </div>
             <div class="filter-item">
-              <label for="filter-amount-min">Cantidad min</label>
+              <label for="filter-amount-min">Importe mínimo</label>
               <input id="filter-amount-min" type="number" step="any" placeholder="0">
             </div>
             <div class="filter-item">
-              <label for="filter-amount-max">Cantidad max</label>
+              <label for="filter-amount-max">Importe máximo</label>
               <input id="filter-amount-max" type="number" step="any" placeholder="1000">
             </div>
             <div class="filter-item">
-              <label for="filter-payment">Como paga</label>
+              <label for="filter-payment">Forma de pago</label>
               <select id="filter-payment">
                 <option value="">Todos</option>
                 <option value="efectivo">Efectivo</option>
@@ -101,7 +101,7 @@
               </select>
             </div>
             <div class="filter-item">
-              <label for="filter-search">Busqueda general</label>
+              <label for="filter-search">Búsqueda</label>
               <input id="filter-search" type="text" placeholder="Texto libre en la fila">
             </div>
             <div class="filter-actions">

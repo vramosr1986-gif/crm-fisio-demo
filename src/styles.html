@@ -1,3 +1,6 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
   --bg1: #eef3f6;
@@ -1228,4 +1231,196 @@ body.touch #tabla-modulo .actions .btn {
     border-radius: 8px;
   }
 }
+
+/* ===== Capa visual: tipografia, tabla, botones y etiquetas ===== */
+:root {
+  --ink: #1d2b34;
+  --muted: #64748b;
+  --line: #dbe4ea;
+  --surface: #ffffff;
+  --surface-2: #f6f9fb;
+  --radius: 12px;
+  --shadow: 0 1px 2px rgba(16, 32, 44, 0.04), 0 8px 24px rgba(16, 32, 44, 0.06);
+}
+
+body {
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  font-size: 15px;
+  -webkit-font-smoothing: antialiased;
+  background: linear-gradient(180deg, #f3f6f8 0%, #e9eff3 100%);
+}
+
+.hero {
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+  padding: 14px 20px;
+  align-items: center;
+}
+.hero h1 { font-size: 1.25rem; font-weight: 700; letter-spacing: -0.01em; }
+.hero .subtitle { font-weight: 500; color: var(--muted); font-size: 0.9rem; margin-top: 2px; }
+
+.layout { gap: 16px; padding: 16px 20px; }
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 16px;
+}
+
+.menu h2 { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+.menu button {
+  background: transparent;
+  border: 1px solid transparent;
+  border-left: 3px solid transparent;
+  border-radius: 8px;
+  font-weight: 600;
+  color: #33495a;
+  margin: 4px 0;
+  transition: background 0.15s ease;
+}
+.menu button:hover { transform: none; background: var(--surface-2); }
+.menu button.is-active {
+  transform: none;
+  box-shadow: none;
+  background: color-mix(in srgb, var(--active) 9%, white);
+  color: var(--active);
+}
+
+.btn {
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.88rem;
+  padding: 8px 14px;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+.btn.secondary, .btn.ghost { background: var(--surface); border-color: var(--line); color: #2f4552; }
+.btn.secondary:hover, .btn.ghost:hover { background: var(--surface-2); border-color: #c3d1da; }
+
+.filters { gap: 10px; }
+.filters input, .filters select {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 10px;
+  font: inherit;
+  font-size: 0.88rem;
+  background: var(--surface);
+  color: var(--ink);
+}
+.filters input:focus, .filters select:focus {
+  outline: none;
+  border-color: var(--active);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--active) 18%, transparent);
+}
+.filters label, .filter-item label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.summary-box {
+  display: inline-block;
+  background: color-mix(in srgb, var(--active) 8%, white);
+  border: 1px solid color-mix(in srgb, var(--active) 22%, white);
+  color: var(--active);
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 0.86rem;
+}
+
+.table-wrap { border-radius: var(--radius); border-color: var(--line); }
+
+#tabla-modulo th,
+#tabla-modulo td {
+  padding: 10px 12px;
+  font-size: 0.88rem;
+  vertical-align: middle;
+  border-bottom: 1px solid #edf2f5;
+}
+#tabla-modulo thead th {
+  background: var(--surface-2);
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  border-bottom: 1px solid var(--line);
+}
+#tabla-modulo tbody tr:nth-child(even) td { background: #fbfcfd; }
+#tabla-modulo tbody tr:hover td { background: #f1f7fa; }
+#tabla-modulo td.nowrap { white-space: nowrap; }
+#tabla-modulo td.num, #tabla-modulo th.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+#tabla-modulo tfoot td { background: var(--surface-2); border-top: 1px solid var(--line); }
+#tabla-modulo .dup-col { color: #b4233a; font-size: 0.78rem; }
+
+#tabla-modulo .actions .btn.tiny {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: #2f4552;
+  padding: 4px 10px;
+  font-size: 0.78rem;
+  margin: 0 4px 0 0;
+}
+#tabla-modulo .actions .btn.tiny:hover { background: var(--surface-2); }
+#tabla-modulo .actions .btn.tiny.danger { color: #a3343f; }
+#tabla-modulo .actions .btn.tiny.danger:hover { background: #fdf1f2; border-color: #f0c9ce; }
+#tabla-modulo .actions .btn.tiny.accent { color: #23714c; }
+#tabla-modulo .actions .btn.tiny.accent:hover { background: #eef8f2; border-color: #c4e3d1; }
+
+.pill {
+  display: inline-block;
+  padding: 2px 9px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  line-height: 1.5;
+  white-space: nowrap;
+  background: #eef2f5;
+  color: #40525e;
+}
+.pill-tarjeta { background: #e8f1fb; color: #24589a; }
+.pill-efectivo { background: #e9f6ee; color: #23714c; }
+.pill-bono { background: #f4ecfb; color: #6b3f9a; }
+.pill-que_paga.pill-fisio { background: #e6f2f6; color: #2d6377; }
+.pill-que_paga.pill-fisio-respi { background: #e5f3f1; color: #276b62; }
+.pill-que_paga.pill-pilates { background: #fdf0e3; color: #95561c; }
+.pill-activa { background: #e9f6ee; color: #23714c; }
+.pill-pausada { background: #fdf3e2; color: #8a5a12; }
+.pill-sesion_o_solopago { background: transparent; color: var(--muted); padding: 0; font-weight: 500; }
+
+.modal-card {
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  box-shadow: 0 24px 60px rgba(16, 32, 44, 0.22);
+}
+.modal-overlay { background: rgba(23, 37, 48, 0.42); backdrop-filter: blur(2px); }
+.modal-card label { font-size: 0.82rem; font-weight: 600; color: #3c5260; }
+.modal-card input, .modal-card select, .modal-card textarea {
+  font: inherit;
+  font-size: 0.9rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 10px;
+}
+.modal-card input:focus, .modal-card select:focus, .modal-card textarea:focus {
+  outline: none;
+  border-color: var(--active);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--active) 18%, transparent);
+}
+
+.cal-day { border-radius: 8px; font-variant-numeric: tabular-nums; }
+.cal-day.has { background: color-mix(in srgb, var(--active) 12%, white); color: var(--active); }
+.calendar-head { align-items: center; }
+.calendar-head h3 { font-size: 0.95rem; white-space: nowrap; margin: 0; }
+.calendar-head .btn,
+.menu .calendar-head button { width: 30px; height: 30px; padding: 0; margin: 0; flex: 0 0 30px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--line); border-left: 1px solid var(--line); border-radius: 8px; background: var(--surface); font-size: 1rem; line-height: 1; }
+.calendar-head h3 { flex: 1; text-align: center; }
 </style>
